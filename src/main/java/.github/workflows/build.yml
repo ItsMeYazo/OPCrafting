@@ -1,0 +1,26 @@
+name: Build Plugin
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+      - name: Compile Plugin
+        run: |
+          mkdir -p build
+          javac -cp papermc-api.jar src/main/java/opcrafting/OPCrafting.java -d build/classes
+          cp -r src/main/resources build/
+          (cd build && jar cf ../OPCrafting.jar .)
+      - name: Upload JAR
+        uses: actions/upload-artifact@v3
+        with:
+          name: OPCrafting.jar
+          path: OPCrafting.jar
